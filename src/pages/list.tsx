@@ -1,12 +1,5 @@
 import DefaultLayout from '@/layouts/default';
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableColumn,
-  TableRow,
-  TableCell,
-} from '@heroui/table';
+import { Card, CardBody, CardFooter } from '@heroui/card';
 import {
   Modal,
   ModalContent,
@@ -15,16 +8,16 @@ import {
   ModalFooter,
   useDisclosure,
 } from '@heroui/modal';
-import { Button } from '@heroui/button';
+import { Button, PressEvent } from '@heroui/button';
 import { Input } from '@heroui/input';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateMeme, incrementLikes, memesSelectors } from '@/store/memeSlice';
 import { RootState } from '@/store';
-import { Heart } from 'lucide-react';
+import { Heart, ExternalLink } from 'lucide-react';
 import { Meme } from '@/types';
 
-export default function IndexPage() {
+export default function ListPage() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedMeme, setSelectedMeme] = useState<number | null>(null);
   const [formData, setFormData] = useState({ name: '', url: '' });
@@ -35,7 +28,7 @@ export default function IndexPage() {
     memesSelectors.selectAll(state.memes)
   );
 
-  const onEdit = (memeId: number) => {
+  const onOpenMeme = (memeId: number) => {
     const meme = memes.find((m: Meme) => m.id === memeId);
     if (meme) {
       setSelectedMeme(memeId);
@@ -103,6 +96,10 @@ export default function IndexPage() {
     }
   };
 
+  const handleVisitUrl = (url: string, e: PressEvent) => {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   const selectedMemeData: Meme | null | undefined =
     selectedMeme !== null
       ? memes.find((m: Meme) => m.id === selectedMeme)
@@ -111,53 +108,63 @@ export default function IndexPage() {
   return (
     <DefaultLayout>
       <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-        <h1 className="text-3xl font-bold text-center mb-6">Meme Collection</h1>
+        <h1 className="text-3xl font-bold text-center mb-6">Meme Gallery</h1>
 
-        <div className="w-full max-w-4xl rounded-lg shadow-md overflow-hidden">
-          <Table
-            aria-label="Meme collection table"
-            className="w-full"
-          >
-            <TableHeader>
-              <TableColumn className="py-3">ID</TableColumn>
-              <TableColumn className="py-3">Name</TableColumn>
-              <TableColumn className="py-3">Likes</TableColumn>
-              <TableColumn className="py-3">Actions</TableColumn>
-            </TableHeader>
-            <TableBody>
-              {memes.map((meme: Meme) => {
-                return (
-                  <TableRow key={meme.id}>
-                    <TableCell>{meme.id}</TableCell>
-                    <TableCell className="font-medium">{meme.name}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <span>{meme.likes}</span>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          color="danger"
-                          className="p-1"
-                          onPress={() => handleLike(meme.id)}
-                        >
-                          <Heart size={16} />
-                        </Button>
-                      </div>
-                    </TableCell>
-                    <TableCell>
+        <div className="w-full max-w-7xl px-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {memes.map((meme: Meme) => (
+              <Card
+                key={meme.id}
+                className="cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => onOpenMeme(meme.id)}
+              >
+                <CardBody className="p-0 overflow-hidden">
+                  <img
+                    src={meme.url}
+                    alt={meme.name}
+                    className="w-full h-48 object-cover"
+                    onError={e => {
+                      e.currentTarget.src = '/placeholder-image.png';
+                      e.currentTarget.alt = 'Image not available';
+                    }}
+                  />
+                </CardBody>
+                <CardFooter className="flex flex-col gap-2 p-4">
+                  <div className="flex justify-between items-center w-full">
+                    <h3 className="font-medium text-lg truncate">
+                      {meme.name}
+                    </h3>
+                    <span className="text-sm text-gray-500">#{meme.id}</span>
+                  </div>
+
+                  <div className="flex justify-between items-center w-full">
+                    <div className="flex items-center gap-2">
+                      <span>{meme.likes}</span>
                       <Button
                         size="sm"
-                        color="primary"
-                        onPress={() => onEdit(meme.id)}
+                        variant="ghost"
+                        color="danger"
+                        className="p-1"
+                        onPress={e => handleLike(meme.id)}
                       >
-                        Edit
+                        <Heart size={16} />
                       </Button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
+                    </div>
+
+                    <Button
+                      size="sm"
+                      variant="light"
+                      className="p-1"
+                      onPress={e => handleVisitUrl(meme.url, e)}
+                    >
+                      <ExternalLink size={16} />
+                      <span className="ml-1">Visit</span>
+                    </Button>
+                  </div>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
         </div>
 
         {selectedMemeData && (
