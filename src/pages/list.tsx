@@ -8,7 +8,7 @@ import {
   ModalFooter,
   useDisclosure,
 } from '@heroui/modal';
-import { Button, PressEvent } from '@heroui/button';
+import { Button } from '@heroui/button';
 import { Input } from '@heroui/input';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -116,7 +116,8 @@ export default function ListPage() {
               <Card
                 key={meme.id}
                 className="cursor-pointer hover:shadow-lg transition-shadow"
-                onClick={() => onOpenMeme(meme.id)}
+                onPress={() => onOpenMeme(meme.id)}
+                isPressable
               >
                 <CardBody className="p-0 overflow-hidden">
                   <img
@@ -155,7 +156,7 @@ export default function ListPage() {
                       size="sm"
                       variant="light"
                       className="p-1"
-                      onPress={e => handleVisitUrl(meme.url, e)}
+                      onPress={e => handleVisitUrl(meme.url)}
                     >
                       <ExternalLink size={16} />
                       <span className="ml-1">Visit</span>
