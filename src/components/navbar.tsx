@@ -74,7 +74,7 @@ export const Navbar = () => {
             <NavbarMenuItem key={`${item.label}-${index}`}>
               <Link
                 color="foreground"
-                href="#"
+                href={item.href}
                 size="lg"
               >
                 {item.label}
