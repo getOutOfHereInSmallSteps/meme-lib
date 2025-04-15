@@ -26,7 +26,7 @@ const memeSlice = createSlice({
       if (!meme) return;
       meme.likes += 1;
     },
-    rehydrateMemes: (state, action: PayloadAction<any>) => {
+    rehydrateMemes: (_, action: PayloadAction<any>) => {
       return action.payload;
     },
   },

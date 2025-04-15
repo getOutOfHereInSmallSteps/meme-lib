@@ -96,7 +96,7 @@ export default function ListPage() {
     }
   };
 
-  const handleVisitUrl = (url: string, e: PressEvent) => {
+  const handleVisitUrl = (url: string) => {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
@@ -145,7 +145,7 @@ export default function ListPage() {
                         variant="ghost"
                         color="danger"
                         className="p-1"
-                        onPress={e => handleLike(meme.id)}
+                        onPress={() => handleLike(meme.id)}
                       >
                         <Heart size={16} />
                       </Button>
