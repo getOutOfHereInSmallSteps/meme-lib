@@ -156,7 +156,7 @@ export default function ListPage() {
                       size="sm"
                       variant="light"
                       className="p-1"
-                      onPress={e => handleVisitUrl(meme.url)}
+                      onPress={_ => handleVisitUrl(meme.url)}
                     >
                       <ExternalLink size={16} />
                       <span className="ml-1">Visit</span>
